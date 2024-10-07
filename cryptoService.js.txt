@@ -1,0 +1,37 @@
+// cryptoService.js
+angular.module('app').service('cryptoService', ['$http', function($http) {
+    var baseUrl = 'https://your-api-url.com/crypto';
+
+    this.encrypt = function(plainText) {
+        return $http.post(baseUrl + '/encrypt', { plainText: plainText });
+    };
+
+    this.decrypt = function(encryptedText) {
+        return $http.post(baseUrl + '/decrypt', { encryptedText: encryptedText });
+    };
+}]);
+
+
+
+// appController.js
+angular.module('app').controller('appController', ['$scope', 'cryptoService', function($scope, cryptoService) {
+    $scope.plainText = '';
+    $scope.encryptedText = '';
+    $scope.decryptedText = '';
+
+    $scope.encryptText = function() {
+        cryptoService.encrypt($scope.plainText).then(function(response) {
+            $scope.encryptedText = response.data;
+        }, function(error) {
+            console.error('Error:', error);
+        });
+    };
+
+    $scope.decryptText = function() {
+        cryptoService.decrypt($scope.encryptedText).then(function(response) {
+            $scope.decryptedText = response.data;
+        }, function(error) {
+            console.error('Error:', error);
+        });
+    };
+}]);
